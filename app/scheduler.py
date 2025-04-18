@@ -3,7 +3,7 @@ import requests
 import os
 
 def sync_job():
-    print("⏰ 스케줄러가 자동으로 캘린더를 동기화합니다...")
+    print("스케줄러가 자동으로 캘린더를 동기화합니다...")
     try:
         response = requests.get("http://127.0.0.1:8000/sync")
         if response.status_code == 200:

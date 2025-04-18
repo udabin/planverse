@@ -11,7 +11,6 @@ load_dotenv()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-# 🔥 수정된 절대 경로 설정
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CLIENT_SECRET_FILE = os.path.join(BASE_DIR, "client_secret.json")
 TOKEN_FILE = os.path.join(BASE_DIR, "token.json")
@@ -50,7 +49,7 @@ def classify_task(summary):
 def get_upcoming_events():
     service = get_calendar_service() 
 
-    now = datetime.datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
+    now = datetime.datetime.utcnow().isoformat() + "Z"
     events_result = service.events().list(
         calendarId='primary',
         timeMin=now,
