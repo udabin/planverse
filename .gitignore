@@ -1,0 +1,19 @@
+# Python 관련
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+token.json
+client_secret.json
+credential.json
+
+# VSCode 설정 무시
+.vscode/
+
+# MacOS 특유 파일 무시
+.DS_Store
+
+# Docker
+Dockerfile
