@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.src.calendar_sync import get_upcoming_events
 from app.src.notion_sync import create_notion_page
 from app.scheduler import start_scheduler
+from app.src.kakao_alert import send_alert
 
 app = FastAPI()
 start_scheduler()
@@ -22,3 +23,7 @@ async def sync_calendar():
         create_notion_page(summary, start, location, task_type)
 
     return {"message": "캘린더 동기화 완료!"}
+
+@app.get("/send_alert")
+async def trigger_alert():
+    return await send_alert()

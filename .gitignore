@@ -17,3 +17,6 @@ credential.json
 
 # Docker
 Dockerfile
+
+# 추가
+notifier.py

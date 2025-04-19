@@ -1,5 +1,3 @@
-# app/src/notion_sync.py
-
 import os
 import requests
 from dotenv import load_dotenv
@@ -53,3 +51,33 @@ def create_notion_page(summary: str, start: str, location: str, task_type):
     response = requests.post(NOTION_API_URL, headers=headers, json=data)
 
     response.raise_for_status()
+
+
+def get_existing_notion_titles():
+    headers ={
+        "Authorization": f"Bearer {NOTION_TOKEN}",
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json"
+    }
+
+    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query"
+    response = requests.post(url, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+
+    # titles = []
+    # for result in data.get("results", []):
+    #     title_property = result["properties"].get("Name", {}).get("title", [])
+    #     if title_property:
+    #         titles.append(title_property[0]["text"]["content"])
+
+    # return titles
+
+    existing_titles = set()
+    for page in data.get("results", []):
+        title_property = page["properties"].get("Name", {}).get("title", [])
+        if title_property:
+            title_text = title_property[0]["text"]["content"]
+            existing_titles.add(title_text)
+
+    return existing_titles

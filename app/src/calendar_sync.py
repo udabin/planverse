@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 
 
 load_dotenv()
@@ -20,6 +21,8 @@ def get_calendar_service():
     creds = None
     if os.path.exists(TOKEN_FILE):
         creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
     if not creds or not creds.valid:
         flow = InstalledAppFlow.from_client_secrets_file(
             CLIENT_SECRET_FILE, SCOPES)
@@ -49,11 +52,24 @@ def classify_task(summary):
 def get_upcoming_events():
     service = get_calendar_service() 
 
-    now = datetime.datetime.utcnow().isoformat() + "Z"
+    now = datetime.datetime.utcnow() #.isoformat() + "Z"
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    today_end = today_start + datetime.timedelta(days=1)
+
+    # 일주일 동기화 하고 싶으면 아래 코드 사용 (일 ~ 토)    
+    # if now.weekday() != 6:
+    #     days_to_subtract = now.weekday() + 1
+    #     start_of_week = now - datetime.timedelta(days=days_to_subtract)
+    # else:
+    #     start_of_week = now
+
+    # end_of_week = start_of_week + datetime.timedelta(days=6)
+
     events_result = service.events().list(
         calendarId='primary',
-        timeMin=now,
-        maxResults=10,
+        timeMin=today_start.isoformat() + "Z",
+        timeMax=today_end.isoformat() + "Z",
+        maxResults=50,
         singleEvents=True,
         orderBy='startTime'
     ).execute()
